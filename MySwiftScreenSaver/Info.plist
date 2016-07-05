@@ -23,6 +23,6 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2016 Hill, Michael. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
-	<string>MySwiftScreenSaverView</string>
+	<string>swiftSS</string>
 </dict>
 </plist>
