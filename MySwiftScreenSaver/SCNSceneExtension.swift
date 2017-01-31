@@ -12,9 +12,9 @@ import SceneKit
 extension SCNScene {
     
     public convenience init?(pathAwareName name: String) {
-        let bundle = NSBundle.pathAwareBundle()
-        if let sceneURL = bundle.URLForResource( name, withExtension: nil) {
-            try! self.init(URL: sceneURL, options: nil )
+        let bundle = Bundle.pathAwareBundle()
+        if let sceneURL = bundle.url( forResource: name, withExtension: nil) {
+            try! self.init(url: sceneURL, options: nil )
             
             //attempt to fix materials, needed if you have paths in your bundle
             //repointMaterialForChildNodes(self.rootNode)
@@ -24,7 +24,7 @@ extension SCNScene {
         }
     }
     
-    func repointMaterialForChildNodes( node: SCNNode) {
+    func repointMaterialForChildNodes( _ node: SCNNode) {
         for childNode in (node.childNodes) {
             //repoint all materials
             if let geometry = childNode.geometry {
@@ -39,16 +39,16 @@ extension SCNScene {
         
     }
     
-    func repointMaterial(material: SCNMaterial) {
+    func repointMaterial(_ material: SCNMaterial) {
         let properties = [ material.diffuse, material.normal, material.specular, material.reflective]
         for property in properties {
             repointContentInMaterialProperty(property)
         }
     }
     
-    func repointContentInMaterialProperty( property: SCNMaterialProperty ) {
+    func repointContentInMaterialProperty( _ property: SCNMaterialProperty ) {
         if let contents = property.contents {
-            if let filename = filenameInMaterialContentDescription( contents.description ) {
+            if let filename = filenameInMaterialContentDescription( (contents as AnyObject).description ) {
                 if let newImage = NSImage(pathAwareName: filename) {
                     property.contents = newImage
                 }
@@ -56,11 +56,12 @@ extension SCNScene {
         }
     }
     
-    func filenameInMaterialContentDescription(contentString: String ) -> String? {
-        let l = contentString.componentsSeparatedByString(" -- ")
+    func filenameInMaterialContentDescription(_ contentString: String ) -> String? {
+        let l = contentString.components(separatedBy: " -- ")
         let filePath = l[0]
-        if let url = NSURL.init(string: filePath) {
-            if let components = url.pathComponents {
+        if let url = URL.init(string: filePath) {
+            let components = url.pathComponents
+            if components.count > 1 {
                 if let lastComp = components.last {
                     return lastComp
                 }
