@@ -8,20 +8,20 @@
 
 import Cocoa
 
-extension NSBundle {
-    static func pathAwareBundle() -> NSBundle {
-        return NSBundle(forClass:object_getClass(swiftSS))
+extension Bundle {
+    static func pathAwareBundle() -> Bundle {
+        return Bundle(for:object_getClass(swiftSS))
     }
     
     static func registerFonts() {
         //force registration of the fonts
         let bundle = self.pathAwareBundle()
-        if let fontURLs = bundle.URLsForResourcesWithExtension( "TTF" , subdirectory: "" ) {
+        if let fontURLs = bundle.urls( forResourcesWithExtension: "TTF" , subdirectory: "" ) {
             
             for fontURL in fontURLs {
                 //let url = NSURL(fileURLWithPath: fontURL as String)
                 var errorRef: Unmanaged<CFError>?
-                let succeeded = CTFontManagerRegisterFontsForURL(fontURL, .Process, &errorRef)
+                let succeeded = CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, &errorRef)
                 
                 if (errorRef != nil) {
                     let error = errorRef!.takeRetainedValue()
